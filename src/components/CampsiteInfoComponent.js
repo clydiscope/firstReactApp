@@ -1,7 +1,7 @@
-import React from 'react';
-import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import React, { Component } from 'react';
+import { Card, CardImg, CardText, CardBody, CardTitle, Button, Breadcrumb, BreadcrumbItem, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
-
+import {LocalForm, Control} from 'react-redux-form';
 
 function RenderCampsite({campsite}) {
     return( <div className="col-md-5 m-1"> 
@@ -14,6 +14,57 @@ function RenderCampsite({campsite}) {
     
     </div>
     );
+}
+
+class CommentForm extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+          isModalOpen: false
+        };
+
+        this.toggleModal = this.toggleModal.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    toggleModal() {
+        this.setState({
+            isModalOpen: !this.state.isModalOpen
+        });
+    }
+
+    handleSubmit(values) {
+        console.log(values)
+        alert(`Rating: ${values.rating} Author: ${values.author} Text: ${values.text}`);
+        this.toggleModal();
+    }
+
+
+    render() {
+        return (
+            <div>
+                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                <ModalHeader toggle={this.toggleModal}>Comment</ModalHeader>
+                    <ModalBody>
+                        <LocalForm onSubmit={this.handleSubmit} className="form-group">
+                            <Control.select className="form-control" model=".rating" id="rating" name="rating" innerRef={input => this.rating = input}>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </Control.select>
+                            <Control.text className="form-control" model=".author" id="author" name="author" innerRef={input => this.author = input}></Control.text>
+                            <Control.textarea className="form-control" rows="6" model=".text" id="text" name="text" innerRef={input => this.text = input}></Control.textarea>
+                            <Button type="submit" value="submit" color="primary"> Submit </Button>
+                        </LocalForm>
+                    </ModalBody>
+                </Modal>
+                <Button outline onClick={this.toggleModal}><i className="fa fa-pencil fa-lg"/> Submit Comment</Button>
+            </div>   
+        )
+    }
 }
 
 function RenderComments({comments}) {
@@ -31,9 +82,12 @@ function RenderComments({comments}) {
                     );
                     })
                 }
+                <CommentForm/>
+
             </div>
         );
-    } else {return( <div></div> )}
+    } else {return( <div><CommentForm/></div> )}
+
 }
     
 
