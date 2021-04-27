@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { Card, CardImg, CardText, CardBody, CardTitle, Button, Breadcrumb, BreadcrumbItem, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import {LocalForm, Control} from 'react-redux-form';
+import {LocalForm, Control, Errors} from 'react-redux-form';
+
+const required = val => val && val.length;
+const maxLength = len => val => !val || (val.length <= len);
+const minLength = len => val => val && (val.length >= len);
 
 function RenderCampsite({campsite}) {
     return( <div className="col-md-5 m-1"> 
@@ -21,7 +25,15 @@ class CommentForm extends Component {
         super(props);
 
         this.state = {
-          isModalOpen: false
+            rating: '5',
+            author: '',
+            text: '',
+            touched: {
+                rating: false,
+                author: false,
+                text: false,
+            },
+            isModalOpen: false
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -48,14 +60,32 @@ class CommentForm extends Component {
                 <ModalHeader toggle={this.toggleModal}>Comment</ModalHeader>
                     <ModalBody>
                         <LocalForm onSubmit={this.handleSubmit} className="form-group">
-                            <Control.select className="form-control" model=".rating" id="rating" name="rating" innerRef={input => this.rating = input}>
+                            <Control.select className="form-control" model=".rating" id="rating" name="rating" 
+                            innerRef={input => this.rating = input}>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
                                 <option value="5">5</option>
                             </Control.select>
-                            <Control.text className="form-control" model=".author" id="author" name="author" innerRef={input => this.author = input}></Control.text>
+                            <Control.text className="form-control" model=".author" id="author" name="author" 
+                            innerRef={input => this.author = input}
+                            validators={{
+                                required,
+                                minLength: minLength(2),
+                                maxLength: maxLength(15)
+                            }}></Control.text>
+                            <Errors
+                                className="text-danger"
+                                model=".author"
+                                show="touched"
+                                component="div"
+                                messages={{
+                                    required: 'Required',
+                                    minLength: 'Must be at least 2 characters',
+                                    maxLength: 'Must be at 15 characters or less.'
+                                }}
+                            />
                             <Control.textarea className="form-control" rows="6" model=".text" id="text" name="text" innerRef={input => this.text = input}></Control.textarea>
                             <Button type="submit" value="submit" color="primary"> Submit </Button>
                         </LocalForm>
