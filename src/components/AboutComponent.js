@@ -1,11 +1,12 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import {baseUrl } from '../shared/baseUrl';
 
 
 function About(props) {
 
-    const partners = props.partners.map(partner => {
+    const partners = props.partners.partners.map(partner => {
         return (
             <Media tag="li" key={partner.id}> <RenderPartner partner={partner}/> </Media>
         );
@@ -15,7 +16,7 @@ function About(props) {
         if(partner) {
             return (
             <React.Fragment>
-                <Media object src={partner.image} alt={partner.name} width="150" />
+                <Media object src={baseUrl + partner.image} alt={partner.name} width="150" />
                 <Media body className="ml-5 mb-4">
                     <Media heading>
                         {partner.name}

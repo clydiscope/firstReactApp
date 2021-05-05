@@ -5,7 +5,7 @@ export const Campsites = (state = {
         errMess: null,
         campsites: []
 }, action) => {
-       
+    
     switch (action.type) {
         case ActionTypes.ADD_CAMPSITES:
             return {...state, isLoading: false, errMess: null, campsites: action.payload}
